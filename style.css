@@ -1,0 +1,525 @@
+/* 基本設定 */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Zen Maru Gothic', 'Noto Serif JP', sans-serif;
+    background: linear-gradient(135deg, #8B4513 0%, #D2691E 50%, #CD853F 100%);
+    min-height: 100vh;
+    color: #2F1B14;
+    overflow-x: hidden;
+}
+
+/* 和風背景パターン */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: 
+        radial-gradient(circle at 25% 25%, rgba(255, 215, 0, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 75% 75%, rgba(220, 20, 60, 0.1) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: -1;
+}
+
+#app {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* 画面切り替え */
+.screen {
+    display: none;
+    width: 100%;
+    max-width: 800px;
+    background: rgba(255, 248, 220, 0.95);
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    border: 3px solid #8B4513;
+    padding: 30px;
+    position: relative;
+}
+
+.screen.active {
+    display: block;
+    animation: slideIn 0.5s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* スタート画面 */
+.dojo-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.title {
+    font-size: 3rem;
+    font-weight: 700;
+    color: #8B0000;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    margin-bottom: 10px;
+    font-family: 'Noto Serif JP', serif;
+}
+
+.subtitle {
+    font-size: 1.2rem;
+    color: #2F1B14;
+    font-weight: 400;
+}
+
+.player-info {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 30px;
+    padding: 20px;
+    background: rgba(255, 215, 0, 0.2);
+    border-radius: 15px;
+    border: 2px solid #DAA520;
+}
+
+.rank-display, .score-display {
+    text-align: center;
+}
+
+.rank-label, .score-label {
+    display: block;
+    font-size: 0.9rem;
+    color: #8B4513;
+    margin-bottom: 5px;
+}
+
+.rank-value, .score-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #8B0000;
+}
+
+.start-buttons {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.btn {
+    padding: 15px 30px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    margin: 0 10px;
+    transition: all 0.3s ease;
+    font-family: inherit;
+}
+
+.btn-primary {
+    background: linear-gradient(45deg, #DC143C, #B22222);
+    color: white;
+    box-shadow: 0 4px 15px rgba(220, 20, 60, 0.4);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(220, 20, 60, 0.6);
+}
+
+.btn-secondary {
+    background: linear-gradient(45deg, #708090, #2F4F4F);
+    color: white;
+    box-shadow: 0 4px 15px rgba(112, 128, 144, 0.4);
+}
+
+.btn-secondary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(112, 128, 144, 0.6);
+}
+
+.instructions {
+    background: rgba(255, 255, 255, 0.8);
+    padding: 20px;
+    border-radius: 15px;
+    border-left: 5px solid #8B0000;
+}
+
+.instructions h3 {
+    color: #8B0000;
+    margin-bottom: 15px;
+    font-size: 1.2rem;
+}
+
+.instructions ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+.instructions li {
+    margin-bottom: 8px;
+    padding-left: 20px;
+    position: relative;
+}
+
+.instructions li::before {
+    content: '🔸';
+    position: absolute;
+    left: 0;
+}
+
+/* ゲーム画面 */
+.game-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    padding: 15px;
+    background: rgba(255, 215, 0, 0.2);
+    border-radius: 10px;
+}
+
+.progress-info {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.timer-container {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.timer-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #DC143C;
+    min-width: 30px;
+    text-align: center;
+}
+
+.current-score {
+    font-weight: 700;
+    color: #8B0000;
+}
+
+.question-container {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.question-text {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #2F1B14;
+    margin-bottom: 30px;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 15px;
+    border: 2px solid #DAA520;
+    line-height: 1.4;
+}
+
+.options-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.option-btn {
+    padding: 20px;
+    font-size: 1.3rem;
+    font-weight: 600;
+    background: linear-gradient(45deg, #F0F8FF, #E6E6FA);
+    border: 3px solid #4169E1;
+    border-radius: 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: #2F1B14;
+    font-family: inherit;
+}
+
+.option-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(65, 105, 225, 0.4);
+    background: linear-gradient(45deg, #E6E6FA, #D8BFD8);
+}
+
+.option-btn.correct {
+    background: linear-gradient(45deg, #90EE90, #98FB98);
+    border-color: #32CD32;
+    animation: correctPulse 0.6s ease;
+}
+
+.option-btn.incorrect {
+    background: linear-gradient(45deg, #FFB6C1, #FFA0B4);
+    border-color: #DC143C;
+    animation: incorrectShake 0.6s ease;
+}
+
+.option-btn:disabled {
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+@keyframes correctPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+@keyframes incorrectShake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+}
+
+.timer-bar-container {
+    width: 100%;
+    height: 8px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+.timer-bar {
+    height: 100%;
+    background: linear-gradient(90deg, #32CD32, #FFD700, #DC143C);
+    border-radius: 4px;
+    transition: width 0.1s linear;
+    width: 100%;
+}
+
+/* 結果画面 */
+.result-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.result-title {
+    font-size: 2.5rem;
+    color: #8B0000;
+    font-weight: 700;
+}
+
+.result-content {
+    text-align: center;
+}
+
+.score-summary {
+    margin-bottom: 30px;
+    padding: 20px;
+    background: rgba(255, 215, 0, 0.2);
+    border-radius: 15px;
+}
+
+.final-score, .correct-count {
+    margin-bottom: 15px;
+}
+
+.score-label, .correct-label {
+    font-size: 1.1rem;
+    color: #8B4513;
+}
+
+.score-value, .correct-value {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #DC143C;
+    margin: 0 5px;
+}
+
+.rank-update {
+    margin-bottom: 30px;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.8);
+    border-radius: 15px;
+}
+
+.rank-up-message {
+    font-size: 1.3rem;
+    color: #32CD32;
+    font-weight: 700;
+    margin-bottom: 15px;
+    animation: rankUpGlow 2s ease-in-out infinite;
+}
+
+.rank-up-message.hidden {
+    display: none;
+}
+
+@keyframes rankUpGlow {
+    0%, 100% { text-shadow: 0 0 5px rgba(50, 205, 50, 0.5); }
+    50% { text-shadow: 0 0 20px rgba(50, 205, 50, 0.8); }
+}
+
+.new-rank, .total-points {
+    margin-bottom: 10px;
+}
+
+.rank-label, .total-label {
+    color: #8B4513;
+}
+
+.rank-value, .total-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #8B0000;
+    margin-left: 10px;
+}
+
+.result-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+/* フィードバック */
+.feedback {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 30px;
+    border-radius: 20px;
+    border: 3px solid #DAA520;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+.feedback.hidden {
+    display: none;
+}
+
+.feedback-icon {
+    font-size: 4rem;
+    margin-bottom: 15px;
+}
+
+.feedback-text {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #2F1B14;
+}
+
+/* レスポンシブデザイン */
+@media (max-width: 768px) {
+    #app {
+        padding: 10px;
+    }
+    
+    .screen {
+        padding: 20px;
+    }
+    
+    .title {
+        font-size: 2.5rem;
+    }
+    
+    .player-info {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .game-header {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .question-text {
+        font-size: 1.5rem;
+    }
+    
+    .option-btn {
+        font-size: 1.1rem;
+        padding: 15px;
+    }
+    
+    .result-buttons {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .btn {
+        width: 100%;
+        max-width: 300px;
+        margin: 5px 0;
+    }
+}
+
+@media (max-width: 480px) {
+    .title {
+        font-size: 2rem;
+    }
+    
+    .question-text {
+        font-size: 1.3rem;
+    }
+    
+    .option-btn {
+        font-size: 1rem;
+        padding: 12px;
+    }
+}
+
+/* 横画面対応 */
+@media (orientation: landscape) and (max-height: 600px) {
+    #app {
+        padding: 10px;
+    }
+    
+    .screen {
+        padding: 15px;
+    }
+    
+    .title {
+        font-size: 2rem;
+        margin-bottom: 5px;
+    }
+    
+    .dojo-header {
+        margin-bottom: 15px;
+    }
+    
+    .player-info {
+        margin-bottom: 15px;
+        padding: 10px;
+    }
+    
+    .instructions {
+        padding: 15px;
+    }
+    
+    .question-text {
+        font-size: 1.4rem;
+        padding: 15px;
+        margin-bottom: 20px;
+    }
+    
+    .options-container {
+        gap: 10px;
+    }
+    
+    .option-btn {
+        padding: 12px;
+        font-size: 1.1rem;
+    }
+}

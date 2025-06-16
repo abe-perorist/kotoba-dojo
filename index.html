@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🈶 ことば道場（Kotoba Dojo）</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;700&family=Zen+Maru+Gothic:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="app">
+        <!-- スタート画面 -->
+        <div id="start-screen" class="screen active">
+            <div class="dojo-header">
+                <h1 class="title">🈶 ことば道場</h1>
+                <p class="subtitle">漢字と語彙の修行をしよう！</p>
+            </div>
+            
+            <div class="player-info">
+                <div class="rank-display">
+                    <span class="rank-label">現在の段位：</span>
+                    <span id="current-rank" class="rank-value">見習い</span>
+                </div>
+                <div class="score-display">
+                    <span class="score-label">修行ポイント：</span>
+                    <span id="total-score" class="score-value">0</span>
+                </div>
+            </div>
+            
+            <div class="start-buttons">
+                <button id="start-game-btn" class="btn btn-primary">修行を始める</button>
+                <button id="reset-progress-btn" class="btn btn-secondary">進捗をリセット</button>
+            </div>
+            
+            <div class="instructions">
+                <h3>🎯 修行の心得</h3>
+                <ul>
+                    <li>問題は全部で8問出題されます</li>
+                    <li>各問題の制限時間は10秒です</li>
+                    <li>3つの選択肢から正しい答えを選びましょう</li>
+                    <li>正解すると修行ポイントがもらえます</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- ゲーム画面 -->
+        <div id="game-screen" class="screen">
+            <div class="game-header">
+                <div class="progress-info">
+                    <span id="question-counter">問題 1/8</span>
+                    <div class="timer-container">
+                        <span class="timer-label">残り時間：</span>
+                        <span id="timer" class="timer-value">10</span>
+                        <span class="timer-unit">秒</span>
+                    </div>
+                </div>
+                <div class="current-score">
+                    <span>今回のスコア：</span>
+                    <span id="current-game-score">0</span>
+                </div>
+            </div>
+
+            <div class="question-container">
+                <div id="question-text" class="question-text"></div>
+                <div id="question-options" class="options-container">
+                    <!-- 選択肢がJavaScriptで動的に生成される -->
+                </div>
+            </div>
+
+            <div class="timer-bar-container">
+                <div id="timer-bar" class="timer-bar"></div>
+            </div>
+        </div>
+
+        <!-- 結果画面 -->
+        <div id="result-screen" class="screen">
+            <div class="result-header">
+                <h2 class="result-title">修行結果</h2>
+            </div>
+            
+            <div class="result-content">
+                <div class="score-summary">
+                    <div class="final-score">
+                        <span class="score-label">今回のスコア：</span>
+                        <span id="final-score" class="score-value">0</span>
+                        <span class="score-unit">点</span>
+                    </div>
+                    <div class="correct-count">
+                        <span class="correct-label">正解数：</span>
+                        <span id="correct-count" class="correct-value">0</span>
+                        <span class="correct-unit">/8問</span>
+                    </div>
+                </div>
+
+                <div class="rank-update">
+                    <div id="rank-up-message" class="rank-up-message hidden">
+                        🎉 段位が上がりました！
+                    </div>
+                    <div class="new-rank">
+                        <span class="rank-label">現在の段位：</span>
+                        <span id="new-rank" class="rank-value">見習い</span>
+                    </div>
+                    <div class="total-points">
+                        <span class="total-label">総修行ポイント：</span>
+                        <span id="new-total-score" class="total-value">0</span>
+                    </div>
+                </div>
+
+                <div class="result-buttons">
+                    <button id="play-again-btn" class="btn btn-primary">もう一度修行する</button>
+                    <button id="back-to-start-btn" class="btn btn-secondary">道場に戻る</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- フィードバック表示 -->
+        <div id="feedback" class="feedback hidden">
+            <div class="feedback-content">
+                <div id="feedback-icon" class="feedback-icon"></div>
+                <div id="feedback-text" class="feedback-text"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
