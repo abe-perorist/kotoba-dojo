@@ -8,6 +8,7 @@ class KotobaDojo {
         this.timer = null;
         this.questions = [];
         this.gameActive = false;
+        this.selectedLevel = 1; // デフォルトは初級
         
         // ローカルストレージから進捗を読み込み
         this.loadProgress();
@@ -25,7 +26,7 @@ class KotobaDojo {
     // 問題データの初期化
     initializeQuestions() {
         const allQuestions = [
-            // 基本的な漢字の読み方
+            // 基本的な漢字の読み方（レベル1）
             {
                 type: "reading",
                 question: "「水」の読み方はどれでしょう？",
@@ -61,8 +62,43 @@ class KotobaDojo {
                 correct: 0,
                 difficulty: 1
             },
-            
-            // 語彙の意味
+            {
+                type: "reading",
+                question: "「空」の読み方はどれでしょう？",
+                options: ["くう", "そら", "から"],
+                correct: 1,
+                difficulty: 1
+            },
+            {
+                type: "reading",
+                question: "「海」の読み方はどれでしょう？",
+                options: ["かい", "うみ", "みず"],
+                correct: 1,
+                difficulty: 1
+            },
+            {
+                type: "reading",
+                question: "「花」の読み方はどれでしょう？",
+                options: ["はな", "か", "け"],
+                correct: 0,
+                difficulty: 1
+            },
+            {
+                type: "reading",
+                question: "「月」の読み方はどれでしょう？",
+                options: ["げつ", "つき", "がつ"],
+                correct: 1,
+                difficulty: 1
+            },
+            {
+                type: "reading",
+                question: "「星」の読み方はどれでしょう？",
+                options: ["せい", "ほし", "しょう"],
+                correct: 1,
+                difficulty: 1
+            },
+
+            // 基本的な語彙の意味（レベル1）
             {
                 type: "meaning",
                 question: "「あたたかい」の意味はどれでしょう？",
@@ -98,8 +134,43 @@ class KotobaDojo {
                 correct: 1,
                 difficulty: 1
             },
-            
-            // 少し難しい問題
+            {
+                type: "meaning",
+                question: "「きもちいい」の意味はどれでしょう？",
+                options: ["きもちわるい", "すがすがしい", "つらい"],
+                correct: 1,
+                difficulty: 1
+            },
+            {
+                type: "meaning",
+                question: "「やさしい」の意味はどれでしょう？",
+                options: ["きびしい", "しんせつ", "いじわる"],
+                correct: 1,
+                difficulty: 1
+            },
+            {
+                type: "meaning",
+                question: "「つよい」の反対はどれでしょう？",
+                options: ["よわい", "かたい", "やわらかい"],
+                correct: 0,
+                difficulty: 1
+            },
+            {
+                type: "meaning",
+                question: "「あたらしい」の反対はどれでしょう？",
+                options: ["ふるい", "わるい", "きたない"],
+                correct: 0,
+                difficulty: 1
+            },
+            {
+                type: "meaning",
+                question: "「きれい」の意味はどれでしょう？",
+                options: ["きたない", "うつくしい", "みにくい"],
+                correct: 1,
+                difficulty: 1
+            },
+
+            // 中級レベルの漢字（レベル2）
             {
                 type: "reading",
                 question: "「学校」の読み方はどれでしょう？",
@@ -115,12 +186,63 @@ class KotobaDojo {
                 difficulty: 2
             },
             {
-                type: "meaning",
-                question: "「きれい」の意味はどれでしょう？",
-                options: ["きたない", "うつくしい", "みにくい"],
-                correct: 1,
+                type: "reading",
+                question: "「家族」の読み方はどれでしょう？",
+                options: ["かぞく", "かてい", "いえ"],
+                correct: 0,
                 difficulty: 2
             },
+            {
+                type: "reading",
+                question: "「動物」の読み方はどれでしょう？",
+                options: ["どうぶつ", "どうもつ", "どうもの"],
+                correct: 0,
+                difficulty: 2
+            },
+            {
+                type: "reading",
+                question: "「植物」の読み方はどれでしょう？",
+                options: ["しょくぶつ", "しょくもつ", "しょくもの"],
+                correct: 0,
+                difficulty: 2
+            },
+            {
+                type: "reading",
+                question: "「季節」の読み方はどれでしょう？",
+                options: ["きせつ", "きせち", "きせい"],
+                correct: 0,
+                difficulty: 2
+            },
+            {
+                type: "reading",
+                question: "「天気」の読み方はどれでしょう？",
+                options: ["てんき", "てんけ", "てんぎ"],
+                correct: 0,
+                difficulty: 2
+            },
+            {
+                type: "reading",
+                question: "「時間」の読み方はどれでしょう？",
+                options: ["じかん", "ときかん", "じげん"],
+                correct: 0,
+                difficulty: 2
+            },
+            {
+                type: "reading",
+                question: "「場所」の読み方はどれでしょう？",
+                options: ["ばしょ", "ところ", "ばところ"],
+                correct: 0,
+                difficulty: 2
+            },
+            {
+                type: "reading",
+                question: "「言葉」の読み方はどれでしょう？",
+                options: ["ことば", "げんご", "はなし"],
+                correct: 0,
+                difficulty: 2
+            },
+
+            // 中級レベルの語彙（レベル2）
             {
                 type: "meaning",
                 question: "「げんき」の意味はどれでしょう？",
@@ -129,14 +251,35 @@ class KotobaDojo {
                 difficulty: 2
             },
             {
-                type: "usage",
-                question: "「ありがとう」を使うのはいつでしょう？",
-                options: ["おこったとき", "かんしゃするとき", "かなしいとき"],
+                type: "meaning",
+                question: "「しずか」の意味はどれでしょう？",
+                options: ["うるさい", "おとがしない", "おおきなこえ"],
                 correct: 1,
                 difficulty: 2
             },
-            
-            // 応用問題
+            {
+                type: "meaning",
+                question: "「きもち」の意味はどれでしょう？",
+                options: ["からだ", "こころ", "あたま"],
+                correct: 1,
+                difficulty: 2
+            },
+            {
+                type: "meaning",
+                question: "「じかん」の意味はどれでしょう？",
+                options: ["ばしょ", "とき", "ひ"],
+                correct: 1,
+                difficulty: 2
+            },
+            {
+                type: "meaning",
+                question: "「ばしょ」の意味はどれでしょう？",
+                options: ["とき", "ところ", "ひ"],
+                correct: 1,
+                difficulty: 2
+            },
+
+            // 応用レベルの漢字（レベル3）
             {
                 type: "reading",
                 question: "「電車」の読み方はどれでしょう？",
@@ -152,55 +295,209 @@ class KotobaDojo {
                 difficulty: 3
             },
             {
+                type: "reading",
+                question: "「博物館」の読み方はどれでしょう？",
+                options: ["はくぶつかん", "はくぶつけん", "はくぶつしょ"],
+                correct: 0,
+                difficulty: 3
+            },
+            {
+                type: "reading",
+                question: "「美術館」の読み方はどれでしょう？",
+                options: ["びじゅつかん", "びじゅつけん", "びじゅつしょ"],
+                correct: 0,
+                difficulty: 3
+            },
+            {
+                type: "reading",
+                question: "「映画館」の読み方はどれでしょう？",
+                options: ["えいがかん", "えいがけん", "えいがしょ"],
+                correct: 0,
+                difficulty: 3
+            },
+            {
+                type: "reading",
+                question: "「遊園地」の読み方はどれでしょう？",
+                options: ["ゆうえんち", "あそびえんち", "ゆうえんじ"],
+                correct: 0,
+                difficulty: 3
+            },
+            {
+                type: "reading",
+                question: "「水族館」の読み方はどれでしょう？",
+                options: ["すいぞくかん", "みずぞくかん", "すいぞくけん"],
+                correct: 0,
+                difficulty: 3
+            },
+            {
+                type: "reading",
+                question: "「動物園」の読み方はどれでしょう？",
+                options: ["どうぶつえん", "どうもつえん", "どうぶつけん"],
+                correct: 0,
+                difficulty: 3
+            },
+            {
+                type: "reading",
+                question: "「植物園」の読み方はどれでしょう？",
+                options: ["しょくぶつえん", "しょくもつえん", "しょくぶつけん"],
+                correct: 0,
+                difficulty: 3
+            },
+            {
+                type: "reading",
+                question: "「科学館」の読み方はどれでしょう？",
+                options: ["かがくかん", "かがくけん", "かがくしょ"],
+                correct: 0,
+                difficulty: 3
+            },
+
+            // 応用レベルの語彙（レベル3）
+            {
                 type: "meaning",
-                question: "「しずか」の意味はどれでしょう？",
-                options: ["うるさい", "おとがしない", "おおきなこえ"],
+                question: "「きもちがいい」の意味はどれでしょう？",
+                options: ["きもちがわるい", "すがすがしい", "つらい"],
                 correct: 1,
                 difficulty: 3
+            },
+            {
+                type: "meaning",
+                question: "「たのしみ」の意味はどれでしょう？",
+                options: ["かなしみ", "よろこび", "つらさ"],
+                correct: 1,
+                difficulty: 3
+            },
+            {
+                type: "meaning",
+                question: "「やすらぎ」の意味はどれでしょう？",
+                options: ["いらだち", "おちつき", "あわただしさ"],
+                correct: 1,
+                difficulty: 3
+            },
+            {
+                type: "meaning",
+                question: "「わくわく」の意味はどれでしょう？",
+                options: ["どきどき", "はらはら", "わくわく"],
+                correct: 2,
+                difficulty: 3
+            },
+            {
+                type: "meaning",
+                question: "「どきどき」の意味はどれでしょう？",
+                options: ["わくわく", "はらはら", "どきどき"],
+                correct: 2,
+                difficulty: 3
+            },
+
+            // 使い方の問題（レベル2-3）
+            {
+                type: "usage",
+                question: "「ありがとう」を使うのはいつでしょう？",
+                options: ["おこったとき", "かんしゃするとき", "かなしいとき"],
+                correct: 1,
+                difficulty: 2
             },
             {
                 type: "usage",
                 question: "「ごめんなさい」を使うのはいつでしょう？",
                 options: ["あやまるとき", "よろこぶとき", "おどろくとき"],
                 correct: 0,
-                difficulty: 3
+                difficulty: 2
             },
             {
                 type: "usage",
                 question: "「おはよう」を使うのはいつでしょう？",
                 options: ["よるねるとき", "あさあうとき", "ひるごはんのとき"],
                 correct: 1,
+                difficulty: 2
+            },
+            {
+                type: "usage",
+                question: "「いただきます」を使うのはいつでしょう？",
+                options: ["ごはんをたべるとき", "ごはんをおわるとき", "ごはんをのむとき"],
+                correct: 0,
+                difficulty: 2
+            },
+            {
+                type: "usage",
+                question: "「ごちそうさま」を使うのはいつでしょう？",
+                options: ["ごはんをたべるとき", "ごはんをおわるとき", "ごはんをのむとき"],
+                correct: 1,
+                difficulty: 2
+            },
+            {
+                type: "usage",
+                question: "「おめでとう」を使うのはいつでしょう？",
+                options: ["かなしいとき", "よろこばしいとき", "おこったとき"],
+                correct: 1,
+                difficulty: 2
+            },
+            {
+                type: "usage",
+                question: "「おやすみ」を使うのはいつでしょう？",
+                options: ["あさあうとき", "よるねるとき", "ひるねるとき"],
+                correct: 1,
+                difficulty: 2
+            },
+            {
+                type: "usage",
+                question: "「さようなら」を使うのはいつでしょう？",
+                options: ["あうとき", "わかれるとき", "はなすとき"],
+                correct: 1,
+                difficulty: 2
+            },
+            {
+                type: "usage",
+                question: "「いただきます」の意味はどれでしょう？",
+                options: ["ごちそうさま", "ありがとう", "さようなら"],
+                correct: 1,
+                difficulty: 3
+            },
+            {
+                type: "usage",
+                question: "「ごちそうさま」の意味はどれでしょう？",
+                options: ["いただきます", "ありがとう", "さようなら"],
+                correct: 1,
                 difficulty: 3
             }
         ];
 
-        // プレイヤーのレベルに応じて問題を選択
+        // レベルに応じた問題選択
         this.questions = this.selectQuestions(allQuestions);
+    }
+
+    // Fisher-Yatesシャッフルアルゴリズム
+    shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
     }
 
     // レベルに応じた問題選択
     selectQuestions(allQuestions) {
-        const playerLevel = this.getPlayerLevel();
         let selectedQuestions = [];
         
-        // レベル1: 基本問題のみ
-        if (playerLevel === 1) {
-            selectedQuestions = allQuestions.filter(q => q.difficulty === 1);
-        }
-        // レベル2: 基本+中級
-        else if (playerLevel === 2) {
-            const basic = allQuestions.filter(q => q.difficulty === 1);
-            const intermediate = allQuestions.filter(q => q.difficulty === 2);
-            selectedQuestions = [...basic, ...intermediate];
-        }
-        // レベル3以上: 全問題
-        else {
-            selectedQuestions = allQuestions;
+        // 選択されたレベルに応じて問題をフィルタリング
+        switch(this.selectedLevel) {
+            case 1: // 初級
+                selectedQuestions = allQuestions.filter(q => q.difficulty === 1);
+                break;
+            case 2: // 中級
+                selectedQuestions = allQuestions.filter(q => q.difficulty <= 2);
+                break;
+            case 3: // 上級
+                selectedQuestions = allQuestions; // 全問題
+                break;
+            default:
+                selectedQuestions = allQuestions.filter(q => q.difficulty === 1);
         }
         
-        // ランダムに8問選択
-        const shuffled = selectedQuestions.sort(() => Math.random() - 0.5);
-        return shuffled.slice(0, 8);
+        // 問題を完全にシャッフル
+        const shuffled = this.shuffleArray([...selectedQuestions]);
+        
+        // 8問を選択（重複を防ぐため、配列の長さを確認）
+        return shuffled.slice(0, Math.min(8, shuffled.length));
     }
 
     // プレイヤーレベルの計算
@@ -229,6 +526,19 @@ class KotobaDojo {
         document.getElementById('reset-progress-btn').addEventListener('click', () => this.resetProgress());
         document.getElementById('play-again-btn').addEventListener('click', () => this.startGame());
         document.getElementById('back-to-start-btn').addEventListener('click', () => this.showStartScreen());
+
+        // レベル選択ボタンのイベントリスナー
+        const levelButtons = document.querySelectorAll('.btn-level');
+        levelButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                // アクティブなボタンのスタイルを更新
+                levelButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+                
+                // 選択されたレベルを保存
+                this.selectedLevel = parseInt(button.dataset.level);
+            });
+        });
     }
 
     // 進捗の読み込み
@@ -324,8 +634,11 @@ class KotobaDojo {
         this.correctAnswers = 0;
         this.gameActive = true;
         
-        // 問題をシャッフル
+        // 問題を初期化してシャッフル
         this.initializeQuestions();
+        
+        // 問題を再度シャッフル（よりランダムな順序を保証）
+        this.questions = this.shuffleArray([...this.questions]);
         
         this.showGameScreen();
         this.showQuestion();
@@ -339,6 +652,13 @@ class KotobaDojo {
         }
 
         const question = this.questions[this.currentQuestionIndex];
+        
+        // デバッグ情報を表示
+        console.log(`レベル: ${this.selectedLevel}, 問題 ${this.currentQuestionIndex + 1}/${this.questions.length}`);
+        console.log(`難易度: ${question.difficulty}, タイプ: ${question.type}`);
+        console.log(`問題: ${question.question}`);
+        console.log(`選択肢: ${question.options.join(', ')}`);
+        console.log('------------------------');
         
         // 問題番号を更新
         document.getElementById('question-counter').textContent = 

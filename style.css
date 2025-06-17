@@ -523,3 +523,41 @@ body::before {
         font-size: 1.1rem;
     }
 }
+
+.level-selection {
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.level-selection h3 {
+    margin-bottom: 10px;
+    color: #333;
+    font-size: 1.2em;
+}
+
+.level-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.btn-level {
+    padding: 8px 20px;
+    border: 2px solid #4CAF50;
+    background-color: white;
+    color: #4CAF50;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-level:hover {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.btn-level.active {
+    background-color: #4CAF50;
+    color: white;
+}
