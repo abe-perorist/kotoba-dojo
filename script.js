@@ -1,4 +1,3 @@
-// ゲーム状態管理
 class KotobaDojo {
     constructor() {
         this.currentQuestionIndex = 0;
@@ -8,464 +7,368 @@ class KotobaDojo {
         this.timer = null;
         this.questions = [];
         this.gameActive = false;
-        this.selectedLevel = 1; // デフォルトは初級
-        
-        // ローカルストレージから進捗を読み込み
+        this.selectedLevel = 1;
+        this.audioContext = null;
+
         this.loadProgress();
-        
-        // 問題データを初期化
         this.initializeQuestions();
-        
-        // イベントリスナーを設定
         this.setupEventListeners();
-        
-        // 初期画面を表示
         this.showStartScreen();
     }
 
-    // 問題データの初期化
+    getAudioContext() {
+        if (!this.audioContext) {
+            this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        if (this.audioContext.state === 'suspended') {
+            this.audioContext.resume();
+        }
+        return this.audioContext;
+    }
+
     initializeQuestions() {
         const allQuestions = [
-            // 基本的な漢字の読み方（レベル1）
+            // ===== レベル1（初級）：3年生の基本漢字 =====
+
+            // 漢字の読み方
             {
                 type: "reading",
-                question: "「水」の読み方はどれでしょう？",
-                options: ["みず", "かわ", "うみ"],
+                question: "「泳ぐ」の読み方はどれでしょう？",
+                options: ["およぐ", "ながぐ", "かぐ"],
                 correct: 0,
                 difficulty: 1
             },
             {
                 type: "reading",
-                question: "「火」の読み方はどれでしょう？",
-                options: ["ひ", "き", "か"],
+                question: "「急ぐ」の読み方はどれでしょう？",
+                options: ["いそぐ", "はやぐ", "すすぐ"],
                 correct: 0,
                 difficulty: 1
             },
             {
                 type: "reading",
-                question: "「木」の読み方はどれでしょう？",
-                options: ["もく", "き", "ぼく"],
-                correct: 1,
-                difficulty: 1
-            },
-            {
-                type: "reading",
-                question: "「山」の読み方はどれでしょう？",
-                options: ["やま", "さん", "ざん"],
+                question: "「温かい」の読み方はどれでしょう？",
+                options: ["あたたかい", "あつかい", "ぬくかい"],
                 correct: 0,
                 difficulty: 1
             },
             {
                 type: "reading",
-                question: "「川」の読み方はどれでしょう？",
-                options: ["かわ", "せん", "がわ"],
+                question: "「運ぶ」の読み方はどれでしょう？",
+                options: ["はこぶ", "うごぶ", "なごぶ"],
                 correct: 0,
                 difficulty: 1
             },
             {
                 type: "reading",
-                question: "「空」の読み方はどれでしょう？",
-                options: ["くう", "そら", "から"],
-                correct: 1,
-                difficulty: 1
-            },
-            {
-                type: "reading",
-                question: "「海」の読み方はどれでしょう？",
-                options: ["かい", "うみ", "みず"],
-                correct: 1,
-                difficulty: 1
-            },
-            {
-                type: "reading",
-                question: "「花」の読み方はどれでしょう？",
-                options: ["はな", "か", "け"],
+                question: "「起きる」の読み方はどれでしょう？",
+                options: ["おきる", "さきる", "うきる"],
                 correct: 0,
                 difficulty: 1
             },
             {
                 type: "reading",
-                question: "「月」の読み方はどれでしょう？",
-                options: ["げつ", "つき", "がつ"],
-                correct: 1,
+                question: "「集まる」の読み方はどれでしょう？",
+                options: ["あつまる", "よつまる", "きつまる"],
+                correct: 0,
                 difficulty: 1
             },
             {
                 type: "reading",
-                question: "「星」の読み方はどれでしょう？",
-                options: ["せい", "ほし", "しょう"],
-                correct: 1,
+                question: "「終わる」の読み方はどれでしょう？",
+                options: ["おわる", "しわる", "とわる"],
+                correct: 0,
+                difficulty: 1
+            },
+            {
+                type: "reading",
+                question: "「進む」の読み方はどれでしょう？",
+                options: ["すすむ", "さすむ", "ひすむ"],
+                correct: 0,
+                difficulty: 1
+            },
+            {
+                type: "reading",
+                question: "「深い」の読み方はどれでしょう？",
+                options: ["ふかい", "すかい", "むかい"],
+                correct: 0,
+                difficulty: 1
+            },
+            {
+                type: "reading",
+                question: "「飲む」の読み方はどれでしょう？",
+                options: ["のむ", "なむ", "ぬむ"],
+                correct: 0,
                 difficulty: 1
             },
 
-            // 基本的な語彙の意味（レベル1）
+            // 意味・反対語
             {
                 type: "meaning",
-                question: "「あたたかい」の意味はどれでしょう？",
-                options: ["つめたい", "あつくない", "すずしい"],
-                correct: 1,
-                difficulty: 1
-            },
-            {
-                type: "meaning",
-                question: "「おおきい」の反対の意味はどれでしょう？",
-                options: ["ちいさい", "たかい", "ひくい"],
+                question: "「急ぐ」の意味はどれでしょう？",
+                options: ["はやくうごくこと", "ゆっくりすること", "やすむこと"],
                 correct: 0,
                 difficulty: 1
             },
             {
                 type: "meaning",
-                question: "「はやい」の意味はどれでしょう？",
-                options: ["おそい", "すばやい", "ゆっくり"],
-                correct: 1,
+                question: "「温かい」の反対の言葉はどれでしょう？",
+                options: ["つめたい", "からい", "かたい"],
+                correct: 0,
                 difficulty: 1
             },
             {
                 type: "meaning",
-                question: "「あかるい」の反対はどれでしょう？",
+                question: "「集める」の意味はどれでしょう？",
+                options: ["いろいろなものをひとつにすること", "ものをわけること", "ものをすてること"],
+                correct: 0,
+                difficulty: 1
+            },
+            {
+                type: "meaning",
+                question: "「勝つ」の反対の言葉はどれでしょう？",
+                options: ["まける", "やめる", "とまる"],
+                correct: 0,
+                difficulty: 1
+            },
+            {
+                type: "meaning",
+                question: "「明るい」の反対の言葉はどれでしょう？",
                 options: ["くらい", "しろい", "きいろい"],
                 correct: 0,
                 difficulty: 1
             },
-            {
-                type: "meaning",
-                question: "「たのしい」の意味はどれでしょう？",
-                options: ["かなしい", "うれしい", "つまらない"],
-                correct: 1,
-                difficulty: 1
-            },
-            {
-                type: "meaning",
-                question: "「きもちいい」の意味はどれでしょう？",
-                options: ["きもちわるい", "すがすがしい", "つらい"],
-                correct: 1,
-                difficulty: 1
-            },
-            {
-                type: "meaning",
-                question: "「やさしい」の意味はどれでしょう？",
-                options: ["きびしい", "しんせつ", "いじわる"],
-                correct: 1,
-                difficulty: 1
-            },
-            {
-                type: "meaning",
-                question: "「つよい」の反対はどれでしょう？",
-                options: ["よわい", "かたい", "やわらかい"],
-                correct: 0,
-                difficulty: 1
-            },
-            {
-                type: "meaning",
-                question: "「あたらしい」の反対はどれでしょう？",
-                options: ["ふるい", "わるい", "きたない"],
-                correct: 0,
-                difficulty: 1
-            },
-            {
-                type: "meaning",
-                question: "「きれい」の意味はどれでしょう？",
-                options: ["きたない", "うつくしい", "みにくい"],
-                correct: 1,
-                difficulty: 1
-            },
 
-            // 中級レベルの漢字（レベル2）
+            // ===== レベル2（中級）：熟語・使い方 =====
+
+            // 熟語の読み方
             {
                 type: "reading",
-                question: "「学校」の読み方はどれでしょう？",
-                options: ["がっこう", "がくこう", "まなびや"],
+                question: "「感謝」の読み方はどれでしょう？",
+                options: ["かんしゃ", "かんか", "かんじゃ"],
                 correct: 0,
                 difficulty: 2
             },
             {
                 type: "reading",
-                question: "「友達」の読み方はどれでしょう？",
-                options: ["ゆうたつ", "ともだち", "とうたつ"],
-                correct: 1,
-                difficulty: 2
-            },
-            {
-                type: "reading",
-                question: "「家族」の読み方はどれでしょう？",
-                options: ["かぞく", "かてい", "いえ"],
+                question: "「相談」の読み方はどれでしょう？",
+                options: ["そうだん", "あいだん", "そうかん"],
                 correct: 0,
                 difficulty: 2
             },
             {
                 type: "reading",
-                question: "「動物」の読み方はどれでしょう？",
-                options: ["どうぶつ", "どうもつ", "どうもの"],
+                question: "「注意」の読み方はどれでしょう？",
+                options: ["ちゅうい", "じゅうい", "ちゅうき"],
                 correct: 0,
                 difficulty: 2
             },
             {
                 type: "reading",
-                question: "「植物」の読み方はどれでしょう？",
-                options: ["しょくぶつ", "しょくもつ", "しょくもの"],
+                question: "「発見」の読み方はどれでしょう？",
+                options: ["はっけん", "はつけん", "はっかん"],
                 correct: 0,
                 difficulty: 2
             },
             {
                 type: "reading",
-                question: "「季節」の読み方はどれでしょう？",
-                options: ["きせつ", "きせち", "きせい"],
+                question: "「昔話」の読み方はどれでしょう？",
+                options: ["むかしばなし", "ふるいはなし", "こばなし"],
                 correct: 0,
                 difficulty: 2
             },
             {
                 type: "reading",
-                question: "「天気」の読み方はどれでしょう？",
-                options: ["てんき", "てんけ", "てんぎ"],
+                question: "「幸せ」の読み方はどれでしょう？",
+                options: ["しあわせ", "こうせ", "さいわせ"],
                 correct: 0,
                 difficulty: 2
             },
             {
                 type: "reading",
-                question: "「時間」の読み方はどれでしょう？",
-                options: ["じかん", "ときかん", "じげん"],
+                question: "「練習」の読み方はどれでしょう？",
+                options: ["れんしゅう", "れんしょう", "れいしゅう"],
                 correct: 0,
                 difficulty: 2
             },
             {
                 type: "reading",
-                question: "「場所」の読み方はどれでしょう？",
-                options: ["ばしょ", "ところ", "ばところ"],
-                correct: 0,
-                difficulty: 2
-            },
-            {
-                type: "reading",
-                question: "「言葉」の読み方はどれでしょう？",
-                options: ["ことば", "げんご", "はなし"],
+                question: "「都合」の読み方はどれでしょう？",
+                options: ["つごう", "とごう", "どごう"],
                 correct: 0,
                 difficulty: 2
             },
 
-            // 中級レベルの語彙（レベル2）
+            // 意味・反対語
             {
                 type: "meaning",
-                question: "「げんき」の意味はどれでしょう？",
-                options: ["つかれた", "びょうき", "ちからがある"],
-                correct: 2,
+                question: "「感謝」の意味はどれでしょう？",
+                options: ["ありがとうのきもち", "こわいきもち", "かなしいきもち"],
+                correct: 0,
                 difficulty: 2
             },
             {
                 type: "meaning",
-                question: "「しずか」の意味はどれでしょう？",
-                options: ["うるさい", "おとがしない", "おおきなこえ"],
-                correct: 1,
+                question: "「相談する」の意味はどれでしょう？",
+                options: ["いっしょにはなしてきめること", "ひとりでかんがえること", "おしえること"],
+                correct: 0,
                 difficulty: 2
             },
             {
                 type: "meaning",
-                question: "「きもち」の意味はどれでしょう？",
-                options: ["からだ", "こころ", "あたま"],
-                correct: 1,
+                question: "「重い」の反対の言葉はどれでしょう？",
+                options: ["かるい", "うすい", "やわらかい"],
+                correct: 0,
                 difficulty: 2
             },
             {
                 type: "meaning",
-                question: "「じかん」の意味はどれでしょう？",
-                options: ["ばしょ", "とき", "ひ"],
-                correct: 1,
+                question: "「暑い」の反対の言葉はどれでしょう？",
+                options: ["さむい", "ぬるい", "すずしい"],
+                correct: 0,
                 difficulty: 2
             },
             {
                 type: "meaning",
-                question: "「ばしょ」の意味はどれでしょう？",
-                options: ["とき", "ところ", "ひ"],
-                correct: 1,
+                question: "「悲しい」の反対に近い言葉はどれでしょう？",
+                options: ["うれしい", "さびしい", "くるしい"],
+                correct: 0,
                 difficulty: 2
             },
 
-            // 応用レベルの漢字（レベル3）
+            // 使い方
             {
-                type: "reading",
-                question: "「電車」の読み方はどれでしょう？",
-                options: ["でんしゃ", "でんき", "きしゃ"],
+                type: "usage",
+                question: "「注意する」のはどんなときでしょう？",
+                options: ["きけんなことにきをつけるとき", "うれしいとき", "ねるとき"],
+                correct: 0,
+                difficulty: 2
+            },
+            {
+                type: "usage",
+                question: "「練習」はなんのためにするでしょう？",
+                options: ["うまくなるため", "やすむため", "あそぶだけのため"],
+                correct: 0,
+                difficulty: 2
+            },
+
+            // ===== レベル3（上級）：ことわざ・難しい語彙 =====
+
+            // ことわざ
+            {
+                type: "proverb",
+                question: "「石の上にも（　）年」の（　）に入る数字はどれでしょう？",
+                options: ["三", "五", "十"],
                 correct: 0,
                 difficulty: 3
             },
             {
-                type: "reading",
-                question: "「図書館」の読み方はどれでしょう？",
-                options: ["としょかん", "ずしょかん", "としょけん"],
+                type: "proverb",
+                question: "「七転び（　）起き」の（　）に入る数字はどれでしょう？",
+                options: ["八", "九", "十"],
                 correct: 0,
                 difficulty: 3
             },
             {
-                type: "reading",
-                question: "「博物館」の読み方はどれでしょう？",
-                options: ["はくぶつかん", "はくぶつけん", "はくぶつしょ"],
+                type: "proverb",
+                question: "「一石（　）鳥」の（　）に入る数字はどれでしょう？",
+                options: ["二", "三", "四"],
                 correct: 0,
                 difficulty: 3
             },
             {
-                type: "reading",
-                question: "「美術館」の読み方はどれでしょう？",
-                options: ["びじゅつかん", "びじゅつけん", "びじゅつしょ"],
+                type: "proverb",
+                question: "「石の上にも三年」とはどういう意味でしょう？",
+                options: ["がまんして続ければいつかうまくいく", "いしのうえは三年でぬくくなる", "三年たてばなんでもできる"],
                 correct: 0,
                 difficulty: 3
             },
             {
-                type: "reading",
-                question: "「映画館」の読み方はどれでしょう？",
-                options: ["えいがかん", "えいがけん", "えいがしょ"],
+                type: "proverb",
+                question: "「七転び八起き」とはどういう意味でしょう？",
+                options: ["何度失敗してもあきらめない", "七回ころんで八回おきること", "からだをきたえること"],
                 correct: 0,
                 difficulty: 3
             },
             {
-                type: "reading",
-                question: "「遊園地」の読み方はどれでしょう？",
-                options: ["ゆうえんち", "あそびえんち", "ゆうえんじ"],
+                type: "proverb",
+                question: "「急がば（　）れ」のことわざ。（　）に入るのはどれでしょう？",
+                options: ["まわ", "はや", "いそ"],
                 correct: 0,
                 difficulty: 3
             },
             {
-                type: "reading",
-                question: "「水族館」の読み方はどれでしょう？",
-                options: ["すいぞくかん", "みずぞくかん", "すいぞくけん"],
-                correct: 0,
-                difficulty: 3
-            },
-            {
-                type: "reading",
-                question: "「動物園」の読み方はどれでしょう？",
-                options: ["どうぶつえん", "どうもつえん", "どうぶつけん"],
-                correct: 0,
-                difficulty: 3
-            },
-            {
-                type: "reading",
-                question: "「植物園」の読み方はどれでしょう？",
-                options: ["しょくぶつえん", "しょくもつえん", "しょくぶつけん"],
-                correct: 0,
-                difficulty: 3
-            },
-            {
-                type: "reading",
-                question: "「科学館」の読み方はどれでしょう？",
-                options: ["かがくかん", "かがくけん", "かがくしょ"],
+                type: "proverb",
+                question: "「猿も木から（　）ちる」のことわざ。（　）に入るのはどれでしょう？",
+                options: ["お", "く", "の"],
                 correct: 0,
                 difficulty: 3
             },
 
-            // 応用レベルの語彙（レベル3）
+            // 難しい漢字の読み方
             {
-                type: "meaning",
-                question: "「きもちがいい」の意味はどれでしょう？",
-                options: ["きもちがわるい", "すがすがしい", "つらい"],
-                correct: 1,
+                type: "reading",
+                question: "「整理整頓」の読み方はどれでしょう？",
+                options: ["せいりせいとん", "せいりせってん", "せいりせいどん"],
+                correct: 0,
                 difficulty: 3
             },
             {
-                type: "meaning",
-                question: "「たのしみ」の意味はどれでしょう？",
-                options: ["かなしみ", "よろこび", "つらさ"],
-                correct: 1,
+                type: "reading",
+                question: "「反省」の読み方はどれでしょう？",
+                options: ["はんせい", "はんしょう", "はんせき"],
+                correct: 0,
                 difficulty: 3
             },
             {
-                type: "meaning",
-                question: "「やすらぎ」の意味はどれでしょう？",
-                options: ["いらだち", "おちつき", "あわただしさ"],
-                correct: 1,
+                type: "reading",
+                question: "「勝負」の読み方はどれでしょう？",
+                options: ["しょうぶ", "かちまけ", "しょうふ"],
+                correct: 0,
                 difficulty: 3
             },
             {
-                type: "meaning",
-                question: "「わくわく」の意味はどれでしょう？",
-                options: ["どきどき", "はらはら", "わくわく"],
-                correct: 2,
-                difficulty: 3
-            },
-            {
-                type: "meaning",
-                question: "「どきどき」の意味はどれでしょう？",
-                options: ["わくわく", "はらはら", "どきどき"],
-                correct: 2,
+                type: "reading",
+                question: "「努力」の読み方はどれでしょう？",
+                options: ["どりょく", "どうりょく", "どりき"],
+                correct: 0,
                 difficulty: 3
             },
 
-            // 使い方の問題（レベル2-3）
+            // 意味
             {
-                type: "usage",
-                question: "「ありがとう」を使うのはいつでしょう？",
-                options: ["おこったとき", "かんしゃするとき", "かなしいとき"],
-                correct: 1,
-                difficulty: 2
-            },
-            {
-                type: "usage",
-                question: "「ごめんなさい」を使うのはいつでしょう？",
-                options: ["あやまるとき", "よろこぶとき", "おどろくとき"],
+                type: "meaning",
+                question: "「整理整頓」の意味はどれでしょう？",
+                options: ["ものをきちんとかたづけること", "ものをたくさんあつめること", "ものをすてること"],
                 correct: 0,
-                difficulty: 2
-            },
-            {
-                type: "usage",
-                question: "「おはよう」を使うのはいつでしょう？",
-                options: ["よるねるとき", "あさあうとき", "ひるごはんのとき"],
-                correct: 1,
-                difficulty: 2
-            },
-            {
-                type: "usage",
-                question: "「いただきます」を使うのはいつでしょう？",
-                options: ["ごはんをたべるとき", "ごはんをおわるとき", "ごはんをのむとき"],
-                correct: 0,
-                difficulty: 2
-            },
-            {
-                type: "usage",
-                question: "「ごちそうさま」を使うのはいつでしょう？",
-                options: ["ごはんをたべるとき", "ごはんをおわるとき", "ごはんをのむとき"],
-                correct: 1,
-                difficulty: 2
-            },
-            {
-                type: "usage",
-                question: "「おめでとう」を使うのはいつでしょう？",
-                options: ["かなしいとき", "よろこばしいとき", "おこったとき"],
-                correct: 1,
-                difficulty: 2
-            },
-            {
-                type: "usage",
-                question: "「おやすみ」を使うのはいつでしょう？",
-                options: ["あさあうとき", "よるねるとき", "ひるねるとき"],
-                correct: 1,
-                difficulty: 2
-            },
-            {
-                type: "usage",
-                question: "「さようなら」を使うのはいつでしょう？",
-                options: ["あうとき", "わかれるとき", "はなすとき"],
-                correct: 1,
-                difficulty: 2
-            },
-            {
-                type: "usage",
-                question: "「いただきます」の意味はどれでしょう？",
-                options: ["ごちそうさま", "ありがとう", "さようなら"],
-                correct: 1,
                 difficulty: 3
             },
             {
-                type: "usage",
-                question: "「ごちそうさま」の意味はどれでしょう？",
-                options: ["いただきます", "ありがとう", "さようなら"],
-                correct: 1,
+                type: "meaning",
+                question: "「反省する」の意味はどれでしょう？",
+                options: ["自分のこうどうをふりかえること", "あそぶこと", "まつこと"],
+                correct: 0,
+                difficulty: 3
+            },
+            {
+                type: "meaning",
+                question: "「努力」の意味はどれでしょう？",
+                options: ["がんばってとりくむこと", "やすむこと", "たのしむだけのこと"],
+                correct: 0,
+                difficulty: 3
+            },
+            {
+                type: "meaning",
+                question: "「一石二鳥」とはどういう意味でしょう？",
+                options: ["一つのことで二つのいいことがある", "いしをなげてことり二羽とぶ", "一ついしをもつこと"],
+                correct: 0,
                 difficulty: 3
             }
         ];
 
-        // レベルに応じた問題選択
         this.questions = this.selectQuestions(allQuestions);
     }
 
-    // Fisher-Yatesシャッフルアルゴリズム
     shuffleArray(array) {
         for (let i = array.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
@@ -474,33 +377,18 @@ class KotobaDojo {
         return array;
     }
 
-    // レベルに応じた問題選択
     selectQuestions(allQuestions) {
         let selectedQuestions = [];
-        
-        // 選択されたレベルに応じて問題をフィルタリング
         switch(this.selectedLevel) {
-            case 1: // 初級
-                selectedQuestions = allQuestions.filter(q => q.difficulty === 1);
-                break;
-            case 2: // 中級
-                selectedQuestions = allQuestions.filter(q => q.difficulty <= 2);
-                break;
-            case 3: // 上級
-                selectedQuestions = allQuestions; // 全問題
-                break;
-            default:
-                selectedQuestions = allQuestions.filter(q => q.difficulty === 1);
+            case 1: selectedQuestions = allQuestions.filter(q => q.difficulty === 1); break;
+            case 2: selectedQuestions = allQuestions.filter(q => q.difficulty <= 2); break;
+            case 3: selectedQuestions = allQuestions; break;
+            default: selectedQuestions = allQuestions.filter(q => q.difficulty === 1);
         }
-        
-        // 問題を完全にシャッフル
         const shuffled = this.shuffleArray([...selectedQuestions]);
-        
-        // 8問を選択（重複を防ぐため、配列の長さを確認）
-        return shuffled.slice(0, Math.min(8, shuffled.length));
+        return shuffled.slice(0, Math.min(10, shuffled.length));
     }
 
-    // プレイヤーレベルの計算
     getPlayerLevel() {
         const totalScore = this.getTotalScore();
         if (totalScore < 100) return 1;
@@ -509,7 +397,6 @@ class KotobaDojo {
         return 4;
     }
 
-    // 段位の取得
     getRank() {
         const totalScore = this.getTotalScore();
         if (totalScore < 50) return "見習い";
@@ -520,28 +407,21 @@ class KotobaDojo {
         return "師範";
     }
 
-    // イベントリスナーの設定
     setupEventListeners() {
         document.getElementById('start-game-btn').addEventListener('click', () => this.startGame());
         document.getElementById('reset-progress-btn').addEventListener('click', () => this.resetProgress());
         document.getElementById('play-again-btn').addEventListener('click', () => this.startGame());
         document.getElementById('back-to-start-btn').addEventListener('click', () => this.showStartScreen());
 
-        // レベル選択ボタンのイベントリスナー
-        const levelButtons = document.querySelectorAll('.btn-level');
-        levelButtons.forEach(button => {
+        document.querySelectorAll('.btn-level').forEach(button => {
             button.addEventListener('click', () => {
-                // アクティブなボタンのスタイルを更新
-                levelButtons.forEach(btn => btn.classList.remove('active'));
+                document.querySelectorAll('.btn-level').forEach(btn => btn.classList.remove('active'));
                 button.classList.add('active');
-                
-                // 選択されたレベルを保存
                 this.selectedLevel = parseInt(button.dataset.level);
             });
         });
     }
 
-    // 進捗の読み込み
     loadProgress() {
         const saved = localStorage.getItem('kotoba-dojo-progress');
         if (saved) {
@@ -552,20 +432,14 @@ class KotobaDojo {
         }
     }
 
-    // 進捗の保存
     saveProgress() {
-        const progress = {
-            totalScore: this.totalScore
-        };
-        localStorage.setItem('kotoba-dojo-progress', JSON.stringify(progress));
+        localStorage.setItem('kotoba-dojo-progress', JSON.stringify({ totalScore: this.totalScore }));
     }
 
-    // 総スコアの取得
     getTotalScore() {
         return this.totalScore || 0;
     }
 
-    // 進捗のリセット
     resetProgress() {
         if (confirm('本当に進捗をリセットしますか？')) {
             localStorage.removeItem('kotoba-dojo-progress');
@@ -574,43 +448,36 @@ class KotobaDojo {
         }
     }
 
-    // スタート画面の表示
     showStartScreen() {
         this.hideAllScreens();
         document.getElementById('start-screen').classList.add('active');
-        
-        // 現在の段位とスコアを表示
         document.getElementById('current-rank').textContent = this.getRank();
         document.getElementById('total-score').textContent = this.getTotalScore();
     }
 
-    // ゲーム画面の表示
     showGameScreen() {
         this.hideAllScreens();
         document.getElementById('game-screen').classList.add('active');
     }
 
-    // 結果画面の表示
     showResultScreen() {
         this.hideAllScreens();
         document.getElementById('result-screen').classList.add('active');
-        
+
         const oldRank = this.getRank();
         const oldTotalScore = this.getTotalScore();
-        
-        // スコアを更新
+
         this.totalScore = oldTotalScore + this.score;
         this.saveProgress();
-        
+
         const newRank = this.getRank();
-        
-        // 結果を表示
+
         document.getElementById('final-score').textContent = this.score;
         document.getElementById('correct-count').textContent = this.correctAnswers;
+        document.querySelector('.correct-unit').textContent = `/${this.questions.length}問`;
         document.getElementById('new-rank').textContent = newRank;
         document.getElementById('new-total-score').textContent = this.getTotalScore();
-        
-        // 段位アップのチェック
+
         const rankUpMessage = document.getElementById('rank-up-message');
         if (oldRank !== newRank) {
             rankUpMessage.classList.remove('hidden');
@@ -620,31 +487,22 @@ class KotobaDojo {
         }
     }
 
-    // 全画面を非表示
     hideAllScreens() {
-        document.querySelectorAll('.screen').forEach(screen => {
-            screen.classList.remove('active');
-        });
+        document.querySelectorAll('.screen').forEach(screen => screen.classList.remove('active'));
     }
 
-    // ゲーム開始
     startGame() {
         this.currentQuestionIndex = 0;
         this.score = 0;
         this.correctAnswers = 0;
         this.gameActive = true;
-        
-        // 問題を初期化してシャッフル
+
         this.initializeQuestions();
-        
-        // 問題を再度シャッフル（よりランダムな順序を保証）
-        this.questions = this.shuffleArray([...this.questions]);
-        
+
         this.showGameScreen();
         this.showQuestion();
     }
 
-    // 問題表示
     showQuestion() {
         if (this.currentQuestionIndex >= this.questions.length) {
             this.endGame();
@@ -652,28 +510,25 @@ class KotobaDojo {
         }
 
         const question = this.questions[this.currentQuestionIndex];
-        
-        // デバッグ情報を表示
-        console.log(`レベル: ${this.selectedLevel}, 問題 ${this.currentQuestionIndex + 1}/${this.questions.length}`);
-        console.log(`難易度: ${question.difficulty}, タイプ: ${question.type}`);
-        console.log(`問題: ${question.question}`);
-        console.log(`選択肢: ${question.options.join(', ')}`);
-        console.log('------------------------');
-        
-        // 問題番号を更新
-        document.getElementById('question-counter').textContent = 
+
+        const typeLabels = {
+            reading: '📖 よみかた',
+            meaning: '💡 いみ・はんたいご',
+            usage: '✏️ つかいかた',
+            proverb: '🏮 ことわざ'
+        };
+        const badge = document.getElementById('question-type-badge');
+        badge.textContent = typeLabels[question.type] || '';
+        badge.className = `question-type-badge type-${question.type}`;
+
+        document.getElementById('question-counter').textContent =
             `問題 ${this.currentQuestionIndex + 1}/${this.questions.length}`;
-        
-        // 現在のスコアを更新
         document.getElementById('current-game-score').textContent = this.score;
-        
-        // 問題文を表示
         document.getElementById('question-text').textContent = question.question;
-        
-        // 選択肢を生成
+
         const optionsContainer = document.getElementById('question-options');
         optionsContainer.innerHTML = '';
-        
+
         question.options.forEach((option, index) => {
             const button = document.createElement('button');
             button.className = 'option-btn';
@@ -681,56 +536,43 @@ class KotobaDojo {
             button.addEventListener('click', () => this.selectAnswer(index));
             optionsContainer.appendChild(button);
         });
-        
-        // タイマーを開始
+
         this.startTimer();
     }
 
-    // タイマー開始
     startTimer() {
         this.timeLeft = 10;
         this.updateTimerDisplay();
-        
+
         this.timer = setInterval(() => {
             this.timeLeft--;
             this.updateTimerDisplay();
-            
             if (this.timeLeft <= 0) {
                 this.timeUp();
             }
         }, 1000);
     }
 
-    // タイマー表示更新
     updateTimerDisplay() {
         document.getElementById('timer').textContent = this.timeLeft;
-        
-        // タイマーバーの更新
+
         const percentage = (this.timeLeft / 10) * 100;
         document.getElementById('timer-bar').style.width = percentage + '%';
-        
-        // 残り時間が少ない時の警告色
+
         const timerElement = document.getElementById('timer');
-        if (this.timeLeft <= 3) {
-            timerElement.style.color = '#DC143C';
-        } else {
-            timerElement.style.color = '#2F1B14';
-        }
+        timerElement.style.color = this.timeLeft <= 3 ? '#DC143C' : '#2F1B14';
     }
 
-    // 回答選択
     selectAnswer(selectedIndex) {
         if (!this.gameActive) return;
-        
+
         clearInterval(this.timer);
         this.gameActive = false;
-        
+
         const question = this.questions[this.currentQuestionIndex];
         const isCorrect = selectedIndex === question.correct;
-        
-        // ボタンの状態を更新
-        const buttons = document.querySelectorAll('.option-btn');
-        buttons.forEach((button, index) => {
+
+        document.querySelectorAll('.option-btn').forEach((button, index) => {
             button.disabled = true;
             if (index === question.correct) {
                 button.classList.add('correct');
@@ -738,166 +580,122 @@ class KotobaDojo {
                 button.classList.add('incorrect');
             }
         });
-        
-        // 結果に応じてスコアと正解数を更新
+
         if (isCorrect) {
             this.correctAnswers++;
-            // 残り時間に応じてボーナスポイント
-            const baseScore = 10;
-            const timeBonus = this.timeLeft;
-            this.score += baseScore + timeBonus;
-            
+            this.score += 10 + this.timeLeft;
             this.showFeedback('correct', '正解！');
             this.playSound('correct');
         } else {
-            this.showFeedback('incorrect', '不正解...');
+            this.showFeedback('incorrect', '不正解...', question.options[question.correct]);
             this.playSound('incorrect');
         }
-        
-        // 1.5秒後に次の問題へ
+
         setTimeout(() => {
             this.hideFeedback();
             this.currentQuestionIndex++;
             this.gameActive = true;
             this.showQuestion();
-        }, 1500);
+        }, 1800);
     }
 
-    // 時間切れ
     timeUp() {
         if (!this.gameActive) return;
-        
+
         clearInterval(this.timer);
         this.gameActive = false;
-        
+
         const question = this.questions[this.currentQuestionIndex];
-        
-        // 正解を表示
-        const buttons = document.querySelectorAll('.option-btn');
-        buttons.forEach((button, index) => {
+
+        document.querySelectorAll('.option-btn').forEach((button, index) => {
             button.disabled = true;
             if (index === question.correct) {
                 button.classList.add('correct');
             }
         });
-        
-        this.showFeedback('timeout', '時間切れ！');
+
+        this.showFeedback('timeout', '時間切れ！', question.options[question.correct]);
         this.playSound('timeout');
-        
-        // 1.5秒後に次の問題へ
+
         setTimeout(() => {
             this.hideFeedback();
             this.currentQuestionIndex++;
             this.gameActive = true;
             this.showQuestion();
-        }, 1500);
+        }, 1800);
     }
 
-    // フィードバック表示
-    showFeedback(type, message) {
-        const feedback = document.getElementById('feedback');
-        const icon = document.getElementById('feedback-icon');
-        const text = document.getElementById('feedback-text');
-        
-        switch (type) {
-            case 'correct':
-                icon.textContent = '🎉';
-                text.textContent = message;
-                break;
-            case 'incorrect':
-                icon.textContent = '😅';
-                text.textContent = message;
-                break;
-            case 'timeout':
-                icon.textContent = '⏰';
-                text.textContent = message;
-                break;
+    showFeedback(type, message, correctAnswer = null) {
+        const icons = { correct: '🎉', incorrect: '😅', timeout: '⏰' };
+        document.getElementById('feedback-icon').textContent = icons[type] || '';
+        document.getElementById('feedback-text').textContent = message;
+
+        const hint = document.getElementById('feedback-hint');
+        if ((type === 'incorrect' || type === 'timeout') && correctAnswer) {
+            hint.textContent = `正解は「${correctAnswer}」`;
+            hint.classList.remove('hidden');
+        } else {
+            hint.classList.add('hidden');
         }
-        
-        feedback.classList.remove('hidden');
+
+        document.getElementById('feedback').classList.remove('hidden');
     }
 
-    // フィードバック非表示
     hideFeedback() {
         document.getElementById('feedback').classList.add('hidden');
+        document.getElementById('feedback-hint').classList.add('hidden');
     }
 
-    // 音響効果
     playSound(type) {
-        // Web Audio APIを使用した簡単な音響効果
-        const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-        
+        const audioContext = this.getAudioContext();
+
         let frequency, duration;
-        
         switch (type) {
-            case 'correct':
-                frequency = 523.25; // C5
-                duration = 0.3;
-                break;
-            case 'incorrect':
-                frequency = 220; // A3
-                duration = 0.5;
-                break;
-            case 'timeout':
-                frequency = 196; // G3
-                duration = 0.4;
-                break;
+            case 'correct':   frequency = 523.25; duration = 0.3; break;
+            case 'incorrect': frequency = 220;    duration = 0.5; break;
+            case 'timeout':   frequency = 196;    duration = 0.4; break;
             case 'rankup':
-                // 段位アップは特別な音
-                this.playRankUpSound(audioContext);
+                this.playRankUpSound();
                 return;
-            default:
-                return;
+            default: return;
         }
-        
+
         const oscillator = audioContext.createOscillator();
         const gainNode = audioContext.createGain();
-        
         oscillator.connect(gainNode);
         gainNode.connect(audioContext.destination);
-        
         oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
         oscillator.type = 'sine';
-        
         gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
         gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
-        
         oscillator.start(audioContext.currentTime);
         oscillator.stop(audioContext.currentTime + duration);
     }
 
-    // 段位アップ音
-    playRankUpSound(audioContext) {
-        const notes = [523.25, 659.25, 783.99]; // C5, E5, G5
-        
-        notes.forEach((frequency, index) => {
+    playRankUpSound() {
+        const audioContext = this.getAudioContext();
+        [523.25, 659.25, 783.99].forEach((frequency, index) => {
             setTimeout(() => {
                 const oscillator = audioContext.createOscillator();
                 const gainNode = audioContext.createGain();
-                
                 oscillator.connect(gainNode);
                 gainNode.connect(audioContext.destination);
-                
                 oscillator.frequency.setValueAtTime(frequency, audioContext.currentTime);
                 oscillator.type = 'sine';
-                
                 gainNode.gain.setValueAtTime(0.2, audioContext.currentTime);
                 gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.4);
-                
                 oscillator.start(audioContext.currentTime);
                 oscillator.stop(audioContext.currentTime + 0.4);
             }, index * 200);
         });
     }
 
-    // ゲーム終了
     endGame() {
         clearInterval(this.timer);
         this.showResultScreen();
     }
 }
 
-// ゲーム初期化
 document.addEventListener('DOMContentLoaded', () => {
     new KotobaDojo();
 });
