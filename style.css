@@ -397,16 +397,23 @@ body::before {
     left: 50%;
     transform: translate(-50%, -50%);
     z-index: 1000;
-    background: rgba(255, 255, 255, 0.95);
-    padding: 30px;
+    background: rgba(255, 255, 255, 0.97);
+    padding: 30px 40px;
     border-radius: 20px;
     border: 3px solid #DAA520;
     text-align: center;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    animation: feedbackAppear 0.25s ease-out;
+    min-width: 220px;
 }
 
 .feedback.hidden {
     display: none;
+}
+
+@keyframes feedbackAppear {
+    from { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+    to   { opacity: 1; transform: translate(-50%, -50%) scale(1); }
 }
 
 .feedback-icon {
@@ -544,20 +551,55 @@ body::before {
 
 .btn-level {
     padding: 8px 20px;
-    border: 2px solid #4CAF50;
-    background-color: white;
-    color: #4CAF50;
-    border-radius: 5px;
+    border: 2px solid #8B4513;
+    background-color: transparent;
+    color: #8B4513;
+    border-radius: 8px;
     cursor: pointer;
     transition: all 0.3s ease;
+    font-family: inherit;
+    font-weight: 700;
+    font-size: 1rem;
 }
 
 .btn-level:hover {
-    background-color: #4CAF50;
-    color: white;
+    background-color: #8B4513;
+    color: #FFF8DC;
 }
 
 .btn-level.active {
-    background-color: #4CAF50;
+    background-color: #8B0000;
     color: white;
+    border-color: #8B0000;
+    box-shadow: 0 3px 10px rgba(139, 0, 0, 0.3);
+}
+
+/* 問題タイプバッジ */
+.question-type-badge {
+    display: inline-block;
+    padding: 4px 14px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    margin-bottom: 12px;
+    color: white;
+    letter-spacing: 0.5px;
+}
+
+.type-reading { background: #4169E1; }
+.type-meaning { background: #2E8B57; }
+.type-usage   { background: #8B4513; }
+.type-proverb { background: #8B0000; }
+
+/* 正解ヒント */
+.correct-answer-hint {
+    display: block;
+    font-size: 1rem;
+    color: #4169E1;
+    font-weight: 600;
+    margin-top: 8px;
+}
+
+.correct-answer-hint.hidden {
+    display: none;
 }

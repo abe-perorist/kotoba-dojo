@@ -45,7 +45,7 @@
             <div class="instructions">
                 <h3>🎯 修行の心得</h3>
                 <ul>
-                    <li>問題は全部で8問出題されます</li>
+                    <li>問題は全部で10問出題されます</li>
                     <li>各問題の制限時間は10秒です</li>
                     <li>3つの選択肢から正しい答えを選びましょう</li>
                     <li>正解すると修行ポイントがもらえます</li>
@@ -71,6 +71,7 @@
             </div>
 
             <div class="question-container">
+                <div id="question-type-badge" class="question-type-badge"></div>
                 <div id="question-text" class="question-text"></div>
                 <div id="question-options" class="options-container">
                     <!-- 選択肢がJavaScriptで動的に生成される -->
@@ -128,6 +129,7 @@
             <div class="feedback-content">
                 <div id="feedback-icon" class="feedback-icon"></div>
                 <div id="feedback-text" class="feedback-text"></div>
+                <div id="feedback-hint" class="correct-answer-hint hidden"></div>
             </div>
         </div>
     </div>
