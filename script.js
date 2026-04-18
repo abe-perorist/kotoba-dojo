@@ -557,10 +557,17 @@ class KotobaDojo {
         document.getElementById('timer').textContent = this.timeLeft;
 
         const percentage = (this.timeLeft / 10) * 100;
-        document.getElementById('timer-bar').style.width = percentage + '%';
+        const timerBar = document.getElementById('timer-bar');
+        timerBar.style.width = percentage + '%';
 
         const timerElement = document.getElementById('timer');
-        timerElement.style.color = this.timeLeft <= 3 ? '#DC143C' : '#2F1B14';
+        if (this.timeLeft <= 3) {
+            timerElement.style.color = '#DC143C';
+            timerBar.classList.add('timer-urgent');
+        } else {
+            timerElement.style.color = '#2F1B14';
+            timerBar.classList.remove('timer-urgent');
+        }
     }
 
     selectAnswer(selectedIndex) {
